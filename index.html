@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense &amp; Budget Visualizer</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Storage error banner (hidden by default) -->
+  <div id="storage-banner" class="hidden" role="alert" aria-live="assertive">
+    <p>⚠️ Transaction data could not be loaded. Local storage may be unavailable.</p>
+  </div>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <h1 class="app-title">Expense &amp; Budget Visualizer</h1>
+    <button id="theme-toggle" class="btn btn--icon" type="button" aria-label="Toggle dark/light theme">
+      <span id="theme-icon" aria-hidden="true">🌙</span>
+    </button>
+  </header>
+
+  <!-- Main content -->
+  <main class="app-main">
+
+    <!-- Total Spending Display -->
+    <section class="total-spending-section" aria-labelledby="total-spending-label">
+      <span id="total-spending-label" class="total-spending-label">Total Spending</span>
+      <span id="total-spending" class="total-spending-value">Rp 0.00</span>
+    </section>
+
+    <!-- Two-column grid: form left, chart right -->
+    <div class="content-grid">
+
+      <!-- Left column: Input Form + Transaction List -->
+      <div class="left-column">
+
+        <!-- Input Form -->
+        <section class="form-section" aria-labelledby="form-heading">
+          <h2 id="form-heading">Add Expense</h2>
+          <form id="expense-form" novalidate>
+
+            <!-- Item Name -->
+            <div class="form-group">
+              <label for="expense-name" class="form-label">Item Name</label>
+              <input
+                type="text"
+                id="expense-name"
+                name="name"
+                class="form-input"
+                maxlength="100"
+                autocomplete="off"
+                aria-describedby="error-name"
+                aria-required="true"
+                placeholder="e.g. Lunch"
+              />
+              <span id="error-name" class="form-error hidden" data-error="name" role="alert"></span>
+            </div>
+
+            <!-- Amount -->
+            <div class="form-group">
+              <label for="expense-amount" class="form-label">Amount (Rp)</label>
+              <input
+                type="number"
+                id="expense-amount"
+                name="amount"
+                class="form-input"
+                min="0.01"
+                step="any"
+                aria-describedby="error-amount"
+                aria-required="true"
+                placeholder="e.g. 45000"
+              />
+              <span id="error-amount" class="form-error hidden" data-error="amount" role="alert"></span>
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+              <label for="expense-category" class="form-label">Category</label>
+              <select
+                id="expense-category"
+                name="category"
+                class="form-select"
+                aria-describedby="error-category"
+                aria-required="true"
+              >
+                <option value="" disabled selected>— Select a category —</option>
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Fun">Fun</option>
+              </select>
+              <span id="error-category" class="form-error hidden" data-error="category" role="alert"></span>
+            </div>
+
+            <button type="submit" class="btn btn--primary">Add Expense</button>
+          </form>
+        </section>
+
+        <!-- Custom Category Control -->
+        <section class="custom-category-section" aria-labelledby="custom-cat-heading">
+          <h2 id="custom-cat-heading">Add Custom Category</h2>
+          <div class="custom-category-control">
+            <label for="custom-category-input" class="form-label">Category Name</label>
+            <input
+              type="text"
+              id="custom-category-input"
+              class="form-input"
+              maxlength="50"
+              autocomplete="off"
+              aria-describedby="error-custom-category"
+              placeholder="e.g. Healthcare"
+            />
+            <button id="add-category-btn" type="button" class="btn btn--secondary">Add Category</button>
+            <span id="error-custom-category" class="form-error hidden" data-error="custom-category" role="alert"></span>
+          </div>
+        </section>
+
+        <!-- Sort Control -->
+        <section class="sort-section">
+          <label for="sort-control" class="form-label">Sort By</label>
+          <select id="sort-control" class="form-select" aria-label="Sort transactions">
+            <option value="chrono">Newest First</option>
+            <option value="amount-asc">Amount: Low to High</option>
+            <option value="amount-desc">Amount: High to Low</option>
+            <option value="category-az">Category: A to Z</option>
+          </select>
+        </section>
+
+        <!-- Transaction List -->
+        <section class="transaction-section" aria-labelledby="transactions-heading">
+          <h2 id="transactions-heading">Transaction History</h2>
+          <div id="transaction-list" class="transaction-list" role="list" aria-live="polite" aria-label="Transaction list">
+            <!-- Rendered by JS -->
+            <p class="empty-state">No expenses recorded yet.</p>
+          </div>
+        </section>
+
+      </div><!-- /.left-column -->
+
+      <!-- Right column: Pie Chart -->
+      <div class="right-column">
+        <section class="chart-section" aria-labelledby="chart-heading">
+          <h2 id="chart-heading">Spending by Category</h2>
+          <div id="chart-container" class="chart-container">
+            <canvas id="pie-chart" aria-label="Spending pie chart" role="img"></canvas>
+            <p id="chart-placeholder" class="chart-placeholder">No data to display.</p>
+          </div>
+        </section>
+      </div><!-- /.right-column -->
+
+    </div><!-- /.content-grid -->
+
+  </main>
+
+  <!-- Toast notification live region -->
+  <div id="notifications" class="notifications" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- Chart.js v4 via jsDelivr CDN -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"
+    onerror="if(typeof PieChartModule!=='undefined')PieChartModule.renderError()"
+  ></script>
+  <!-- App logic -->
+  <script src="js/script.js" defer></script>
+</body>
+</html>
